@@ -35,10 +35,7 @@ class BowerManagerView extends ScrollView
     @on 'click', '.panels-menu li a, .panels-packages li a', (e) =>
       @showPanel($(e.target).closest('li').attr('name'))
 
-    @openDotAtom.on 'click', ->
-      atom.open(pathsToOpen: [atom.getConfigDirPath()])
-
-    @addCorePanel 'Packages', 'package', -> new InstalledPackagesPanel
+    @addCorePanel 'Packages', 'package', => new InstalledPackagesPanel
     @addCorePanel 'Install', 'plus', => new InstallPanel
 
     @showDeferredPanel()
@@ -68,20 +65,20 @@ class BowerManagerView extends ScrollView
     # These nested conditionals are not great but I feel like it's the most
     # expedient thing to do - I feel like the "right way" involves refactoring
     # this whole file.
-    # unless panel?
-    #   callback = @panelCreateCallbacks?[name]
-    #
-    #   if options?.pack and not callback
-    #     callback = =>
-    #       # sigh
-    #       options.pack.metadata = options.pack
-    #       new PackageDetailView(options.pack, @packageManager)
-    #
-    #   if callback
-    #     panel = callback()
-    #     @panelsByName ?= {}
-    #     @panelsByName[name] = panel
-    #     delete @panelCreateCallbacks[name]
+    unless panel?
+      callback = @panelCreateCallbacks?[name]
+
+      if options?.pack and not callback
+        callback = =>
+          # sigh
+          options.pack.metadata = options.pack
+          new PackageDetailView(options.pack, @packageManager)
+
+      if callback
+        panel = callback()
+        @panelsByName ?= {}
+        @panelsByName[name] = panel
+        delete @panelCreateCallbacks[name]
 
     panel
 

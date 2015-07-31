@@ -1,5 +1,6 @@
 {$$, TextEditorView, View} = require 'atom-space-pen-views'
 
+module.exports =
 class InstalledPackagesPanel extends View
   @content: ->
     @div =>
