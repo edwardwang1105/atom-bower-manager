@@ -1,0 +1,13 @@
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Bower Manager'
+      'submenu': [
+        { 'label': 'Open', 'command': 'bower-manager:open' }
+        { 'label': 'Install Packages', 'command': 'bower-manager:install' }
+      ]
+    ]
+  }
+]
