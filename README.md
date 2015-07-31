@@ -1,3 +1,3 @@
 # Bower Manager
 
-Manager bower packages just like atom packages :)
+Manage bower packages just like atom packages :)
