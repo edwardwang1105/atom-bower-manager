@@ -2,6 +2,7 @@
 {Disposable} = require 'atom'
 InstalledPackagesPanel = require './installed-packages-panel'
 InstallPanel = require './install-panel'
+BowerManager = require './bower-manager'
 
 module.exports =
 class BowerManagerView extends ScrollView
@@ -15,6 +16,7 @@ class BowerManagerView extends ScrollView
 
   initialize: ({@uri, activePanelName}={}) ->
     super
+    @bowerManager = new BowerManager()
 
     @deferredPanel = {name: activePanelName}
     process.nextTick => @initializePanels()
@@ -35,7 +37,7 @@ class BowerManagerView extends ScrollView
     @on 'click', '.panels-menu li a, .panels-packages li a', (e) =>
       @showPanel($(e.target).closest('li').attr('name'))
 
-    @addCorePanel 'Packages', 'package', => new InstalledPackagesPanel
+    @addCorePanel 'Packages', 'package', => new InstalledPackagesPanel(@bowerManager)
     @addCorePanel 'Install', 'plus', => new InstallPanel
 
     @showDeferredPanel()

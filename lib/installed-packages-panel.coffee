@@ -5,3 +5,11 @@ class InstalledPackagesPanel extends View
   @content: ->
     @div =>
       @text "this is installed packages panel"
+
+  initialize: (@bowerManager) ->
+    @loadPackages()
+
+  loadPackages: ->
+    @bowerManager.getInstalled()
+      .then (packages) =>
+        console.log(packages)
