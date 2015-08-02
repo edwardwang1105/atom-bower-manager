@@ -35,7 +35,7 @@ class BowerManager
           return callback(error)
         # @cacheAvailablePackageNames(packages)
         packages = for name, details of bowerListInfo.dependencies
-          {name: details.pkgMeta.name, version: details.pkgMeta.version}
+          details.pkgMeta
         callback(null, packages)
       else
         error = new Error(errorMessage)
