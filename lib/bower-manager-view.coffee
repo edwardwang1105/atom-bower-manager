@@ -38,7 +38,7 @@ class BowerManagerView extends ScrollView
       @showPanel($(e.target).closest('li').attr('name'))
 
     @addCorePanel 'Packages', 'package', => new InstalledPackagesPanel(@bowerManager)
-    @addCorePanel 'Install', 'plus', => new InstallPanel
+    @addCorePanel 'Install', 'plus', => new InstallPanel(@bowerManager)
 
     @showDeferredPanel()
     @showPanel('Packages') unless @activePanelName

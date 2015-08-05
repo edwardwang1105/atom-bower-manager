@@ -1,12 +1,14 @@
 {BufferedProcess, File, CompositeDisposable, Emitter} = require 'atom'
 Q = require 'q'
 path = require 'path'
+request = require 'request'
 
 Q.stopUnhandledRejectionTracking()
 
 module.exports =
 class BowerManager
   constructor: ->
+    process.env.BOWER_HOME = atom.project.getPaths()[0]
     @packagePromises = []
     @availablePackageCache = null
     @emitter = new Emitter
@@ -20,7 +22,7 @@ class BowerManager
     exit = (code) ->
       callback(code, outputLines.join('\n'), errorLines.join('\n'))
 
-    options = cwd: atom.project.getPaths()[0]
+    options = cwd: process.env.BOWER_HOME
     new BufferedProcess({command, args, options, stdout, stderr, exit})
 
   loadInstalled: (callback) ->
@@ -47,6 +49,21 @@ class BowerManager
 
   getInstalled: ->
     Q.nbind(@loadInstalled, this)()
+
+  getRegistered: ->
+    registeryUrl = 'https://bower-component-list.herokuapp.com/'
+    Q.nfcall request, registeryUrl
+    # deferred = Q.defer();
+    #
+    # registeryUrl = 'https://bower-component-list.herokuapp.com/'
+    # request registeryUrl, (error, response, body) ->
+    #   if !error and response.statusCode is 200
+    #     console.log body
+    #     deferred.resolve body
+    #   else
+    #     deferred.reject new Error(error)
+    #
+    # deferred.promise
 
   createProcessError = (message, processError) ->
     error = new Error(message)
