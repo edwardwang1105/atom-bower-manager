@@ -37,7 +37,6 @@ class InstalledPackagesPanel extends View
         # TODO show empty mesage per section
 
         @updateSectionCounts()
-        @displayPackageUpdates(packagesWithUpdates)
 
       .catch (error) =>
         console.error error.message, error.stack

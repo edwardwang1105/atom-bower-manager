@@ -51,19 +51,18 @@ class BowerManager
     Q.nbind(@loadInstalled, this)()
 
   getRegistered: ->
-    registeryUrl = 'https://bower-component-list.herokuapp.com/'
-    Q.nfcall request, registeryUrl
-    # deferred = Q.defer();
-    #
     # registeryUrl = 'https://bower-component-list.herokuapp.com/'
-    # request registeryUrl, (error, response, body) ->
-    #   if !error and response.statusCode is 200
-    #     console.log body
-    #     deferred.resolve body
-    #   else
-    #     deferred.reject new Error(error)
-    #
-    # deferred.promise
+    # Q.nfcall request, registeryUrl
+    deferred = Q.defer();
+
+    registeryUrl = 'https://bower-component-list.herokuapp.com/'
+    request.get registeryUrl, {json: true}, (error, response, body) ->
+      if !error and response.statusCode is 200
+        deferred.resolve body
+      else
+        deferred.reject new Error(error)
+
+    deferred.promise
 
   createProcessError = (message, processError) ->
     error = new Error(message)

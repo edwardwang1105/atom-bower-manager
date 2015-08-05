@@ -1,3 +1,4 @@
+_ = require 'lodash'
 path = require 'path'
 {$, $$, TextEditorView, View} = require 'atom-space-pen-views'
 {CompositeDisposable} = require 'atom'
@@ -25,6 +26,7 @@ class InstallPanel extends View
 
           @div outlet: 'searchErrors'
           @div outlet: 'searchMessage', class: 'alert alert-info search-message icon icon-search'
+          @div outlet: 'loadingMessage', class: 'alert alert-info featured-message icon icon-hourglass'
           @div outlet: 'resultsContainer', class: 'container package-container'
 
   initialize: (@packageManager) ->
@@ -40,9 +42,23 @@ class InstallPanel extends View
     @searchEditorView.getModel().setPlaceholderText('Search packages')
     # @handleSearchEvents()
 
-    @loadAllPackages()
+    @loadRegisteredPackages()
 
-  loadAllPackages: ->
+  loadRegisteredPackages: ->
+    @resultsContainer.empty()
+    @loadingMessage.text('Loading registered packages\u2026')
+    @loadingMessage.show()
+
     @packageManager.getRegistered()
       .then (packages) =>
-        console.log packages
+        firstTenPackages = _.take packages, 10
+        @loadingMessage.hide()
+        @addPackageViews(@resultsContainer, firstTenPackages)
+
+  addPackageViews: (container, packages) ->
+    container.empty()
+
+    for pack, index in packages
+      packageRow = $$ -> @div class: 'row'
+      container.append(packageRow)
+      packageRow.append(new PackageCard(pack, @packageManager, back: 'Install'))
