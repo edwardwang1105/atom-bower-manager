@@ -28,13 +28,12 @@ class BowerManager
   loadInstalled: (callback) ->
     args = ['list', '--offline', '--json']
     errorMessage = 'Listing local packages failed.'
-    bowerProcess = @runCommand args, (code, stdout, stderr) =>
+    @runCommand args, (code, stdout, stderr) =>
       if code is 0
         try
           bowerListInfo = JSON.parse(stdout)
         catch parseError
-          error = createJsonParseError(errorMessage, parseError, stdout)
-          return callback(error)
+          return callback(parseError)
         # @cacheAvailablePackageNames(packages)
         packages = for name, details of bowerListInfo.dependencies
           details.pkgMeta
@@ -44,8 +43,6 @@ class BowerManager
         error.stdout = stdout
         error.stderr = stderr
         callback(error)
-
-    handleProcessErrors(bowerProcess, errorMessage, callback)
 
   getInstalled: ->
     Q.nbind(@loadInstalled, this)()
@@ -63,14 +60,3 @@ class BowerManager
         deferred.reject new Error(error)
 
     deferred.promise
-
-  createProcessError = (message, processError) ->
-    error = new Error(message)
-    error.stdout = ''
-    error.stderr = processError.message
-    error
-
-  handleProcessErrors = (bowerProcess, message, callback) ->
-    bowerProcess.onWillThrowError ({error, handle}) ->
-      handle()
-      callback(createProcessError(message, error))
